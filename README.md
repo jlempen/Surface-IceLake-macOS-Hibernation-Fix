@@ -1,5 +1,28 @@
 # Surface-IceLake-Hibernation-Fix
-To fix Hibernation (`hibernatemode 25`) in macOS on the **Surface Pro 7**, **Surface Laptop 3**, **Surface Laptop Go 1** and very likely also on the **Surface Book 3**, make the following changes to your `config.plist` file:
+After many hours of tinkering, **I finally found a way to fix ACPI S4 Hibernation** (`hibernatemode 25`) in macOS on the **Surface Pro 7**, **Surface Laptop 3**, **Surface Laptop Go 1** (tested working in macOS Sonoma 14.5 on all three devices) and very likely on the **Surface Book 3** (untested) as well. ACPI S3 Sleep (`hibernatemode 0`) is still broken, though, but perhaps the Hibernation fix will lead the way to a full S3 Sleep fix at some point in the future.
+
+The key to the fix is to **enable ACPI S3 Sleep** in the DSDT. This is actually very easy and I'm stunned nobody tried this before. Searching for `_S3` in the `DSDT.aml` file leads us to this:
+
+```
+    If (SS3)
+    {
+        Name (_S3, Package (0x04)  // _S3_: S3 System State
+        {
+            0x05, 
+            Zero, 
+            Zero, 
+            Zero
+        })
+    }
+```
+So to enable `_S3`, `SS3` needs to return `One`. Now searching for `SS3` leads us to this:
+```
+    Name (SS1, Zero)
+    Name (SS2, Zero)
+    Name (SS3, Zero)
+    Name (SS4, One)
+```
+
 
 ## Enable ACPI S3 Sleep
 Change `Name (SS3, Zero)` to `Name (SS3, One)` to enable **ACPI S3 Sleep** with the following ACPI patch in `ACPI -> Patch`:
@@ -8,8 +31,17 @@ Comment: Rename Name (SS3, Zero) to One - Enable S3 Sleep
 Find: 5353335F00
 Replace: 5353335F01
 ```
+Before the rename, the system log shows:
+> (AppleACPIPlatform) ACPI: sleep states S4 S5
+
+After the rename, the system log shows:
+> (AppleACPIPlatform) ACPI: sleep states S3 S4 S5
+
+and commands such as `pmset -g log` or `pmset -g log | grep -e "Sleep.*due to" -e "Wake.*due to"` now clearly show that the device is entering sleep and (eventually) waking up from sleep.
 
 ## Add Reserved Memory region
+This fix was found in [Tyler Nguyen's x1c6-hackintosh repo](https://github.com/tylernguyen/x1c6-hackintosh/issues/44#issuecomment-705971765). Thank you @benbender @1Revenger1 @savvamitrofanov and @vit9696!
+
 Get rid of the black screen on Wake with the following Reserved Memory region in `NVRAM -> ReservedMemory`:
 ```
 Comment: Fix hibernate mode 25 black screen on wake
@@ -20,6 +52,8 @@ Enabled: true
 ```
 
 ## Enable DiscardHibernateMap
+This doesn't seem to be required on every Surface device, but at least on the Surface Laptop 3, it fixes a kernel panic on Wake.
+
 Enable the following Booter Quirk in `Booter -> Quirks`:
 ```
 DiscardHibernateMap=true
@@ -32,7 +66,9 @@ HibernateMode=NVRAM
 ```
 
 ## Add the GPRW instant wake patch
-At least on the **Surface Pro 7** and the **Surface Laptop Go 1**, the GPRW instant wake patch is required as well. Add `SSDT-GPRW.aml` to the ACPI folder of your EFI. Then add `SSDT-GPRW.aml` and the following ACPI patch to the `config.plist` file in `ACPI -> Patch`:
+At least on the **Surface Pro 7** and the **Surface Laptop Go 1**, the GPRW instant wake patch is required as well. 
+
+Add [SSDT-GPRW.aml](https://github.com/jlempen/Surface-IceLake-Hibernation-Fix/blob/main/SSDT-GPRW.aml) to the ACPI folder of your EFI. Then add `SSDT-GPRW.aml` to `ACPI -> Add` and the following ACPI patch to `ACPI -> Patch` in the `config.plist` file:
 ```
 Comment: Change Method(GPRW,2,N) to XPRW, pair with SSDT-GPRW.aml
 Find: 4750525702
@@ -55,3 +91,21 @@ Once you are back in macOS, disable Sleep and enable Hibernate again, then reboo
 ```
 sudo pmset restoredefaults
 sudo pmset -a hibernatemode 25
+```
+
+## Fix broken Bluetooth on Wake from Hibernation
+After the device wakes up from Hibernation, Bluetooth may be broken / unable to connect.
+
+A very simple fix for this issue is to [download and install Bluesnooze](https://github.com/odlp/bluesnooze). Launch the app, enable `Launch at login` and you're done!
+
+## A few comments / Help needed!
+Hibernation seems to be working perfectly on my i5 / 8GB / 256GB **Surface Pro 7** running on macOS Ventura 13.6.7 with the SMBIOS `MacBookAir9,1` and running [Xiashangning's BigSurface.kext v6.5](https://github.com/Xiashangning/BigSurface/releases/tag/v6.5). Everything is back online after waking up from hibernation.
+
+However, my 15-Inch i7 / 16GB / 2TB WD SN770M **Surface Laptop 3** running macOS Sonoma 14.5 with the SMBIOS `MacBookPro16,2` and running [Xiashangning's BigSurface.kext v6.2](https://github.com/Xiashangning/BigSurface/releases/tag/v6.2) wakes up with a dead trackpad, a non-functional USB-C port and broken Bluetooth. The above fix for Bluetooth works great, but I have yet to find a way to fix the dead trackpad and the USB-C port.
+
+The main difference between the **Surface Pro 7** and the **Surface Laptop 3** is that on the **Surface Pro 7** (and **Surface Laptop Go 1**), the keyboard and trackpad are attached through USB, whereas on the **Surface Laptop 3** (and **Surface Book 3**), they are attached through a proprietary interface.
+
+The Surface Laptop 3 has a nasty issue with the trackpad. Fixing the issue [requires downgrading the firmware and BigSurface.kext](https://github.com/Xiashangning/BigSurface/issues/79#issuecomment-2208484390), that's why it still runs with BigSurface.kext v6.2.
+The trackpad works with the latest BigSurface.kext v6.5, though, but the trackpad lags and skips every few seconds. Furthermore, tests show that the BigSurface.kext v6.5 doesn't fix the dead trackpad after wake from hibernation.
+
+So, the first steps to troubleshoot those issues would be to downgrade macOS to 13.6.7 Ventura and change the SMBIOS back to `MacBookAir9,1`. But I'm not too confident that would fix the dead trackpad after wake from hibernation. We would probably need to find someone who is able to fix the `BigSurface.kext` and I'm not sure Xiashangning is still maintaining his BigSurface repo, as there hasn't been any activity for over a year now, [since July 14th 2023](https://github.com/Xiashangning/BigSurface/issues/109#issuecomment-1636433545).
