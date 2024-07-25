@@ -1,4 +1,4 @@
-# Surface-IceLake-Hibernation-Fix
+# Surface-IceLake-macOS-Hibernation-Fix
 After many hours of tinkering, **I finally found a way to fix ACPI S4 Hibernation** (`hibernatemode 25`) on the **i5 Surface Pro 7** on macOS 13.6.7 Ventura, **15-Inch i7 Surface Laptop 3** on macOS 14.5 Sonoma, **i5 Surface Laptop Go 1** on macOS 13.6.7 Ventura and very likely on the **Surface Book 3** (untested) as well. ACPI S3 Sleep (`hibernatemode 0`) is still broken, though, but perhaps the Hibernation fix will lead the way to a full S3 Sleep fix at some point in the future.
 
 The key to the fix is to **enable ACPI S3 Sleep** in the DSDT. This is actually very easy and I'm stunned nobody tried this before. Searching for `_S3` in the `DSDT.aml` file leads us to this:
@@ -106,7 +106,7 @@ However, my i7 / 16GB / 2TB WD SN770M **15-Inch Surface Laptop 3** running macOS
 The main difference between the **Surface Pro 7** or **Surface Laptop Go 1** and the **Surface Laptop 3** or **Surface Book 3** is that on the former, the keyboard and trackpad are attached through USB, whereas on the latter, they are attached through a proprietary interface.
 
 Both the **Surface Laptop 3** and the **Surface Book 3** are plagued by a nasty issue with the trackpad on macOS. Fixing the issue is possible, but [requires downgrading the firmware to 13.101.140.0 and BigSurface.kext to 6.2](https://github.com/Xiashangning/BigSurface/issues/79#issuecomment-2208484390), that's why it still runs with `BigSurface.kext` v6.2.
-The trackpad works with the latest `BigSurface.kext` v6.5, though, but the trackpad lags and skips every few seconds. Furthermore, tests show that the BigSurface.kext v6.5 doesn't fix the dead trackpad after wake from hibernation.
+The trackpad works with the latest `BigSurface.kext` v6.5, though, but the trackpad lags and skips every few seconds. Furthermore, tests show that the `BigSurface.kext` v6.5 doesn't fix the dead trackpad after wake from hibernation.
 
 Playing around trying to unload the `BigSurface.kext` or `VoodooSerial.kext` plug-in before hibernate and reloading it on wake from hibernate has been a dead end until now, as I'm unable to do so due to various errors with the `kextstat`, `kextunload` and `kextload` commands in macOS.
 
