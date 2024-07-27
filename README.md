@@ -64,6 +64,10 @@ In `Misc -> Boot`, set `HibernateMode` to `NVRAM`:
 ```
 HibernateMode=NVRAM
 ```
+I would also recommend enabling `HibernateSkipsPicker` in `Misc -> Boot`:
+```
+HibernateSkipsPicker=true
+```
 
 ## Add the GPRW instant wake patch
 At least on the **Surface Pro 7** and the **Surface Laptop Go 1**, the GPRW instant wake patch is required as well. 
