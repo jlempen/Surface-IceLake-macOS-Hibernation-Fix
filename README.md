@@ -128,6 +128,9 @@ I also built the older `BigSurface v6.2` with the above commit and with this ver
 
 I would be glad if a few `Surface Laptop 3` and `Surface Book 3` users could try those test builds and report back.
 
-[BigSurface62SL3.zip](https://github.com/user-attachments/files/16448021/BigSurface62SL3.zip)
-[BigSurface65SL3.zip](https://github.com/user-attachments/files/16448027/BigSurface65SL3.zip)
+Edit: both kexts updated with the VoodooInput.kext v1.1.5 for macOS Sequoia Beta 5 compatibility:
+
+[BigSurface v6.2 for SL3 and SB3.zip](https://github.com/user-attachments/files/16576290/BigSurface.v6.2.for.SL3.and.SB3.zip)
+
+[BigSurface v6.5 for SL3 and SB3.zip](https://github.com/user-attachments/files/16576291/BigSurface.v6.5.for.SL3.and.SB3.zip)
 
