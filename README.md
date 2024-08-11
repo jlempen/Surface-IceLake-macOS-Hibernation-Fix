@@ -110,8 +110,24 @@ However, my i7 / 16GB / 2TB WD SN770M **15-Inch Surface Laptop 3** running macOS
 The main difference between the **Surface Pro 7** or **Surface Laptop Go 1** and the **Surface Laptop 3** or **Surface Book 3** is that on the former, the keyboard and trackpad are attached through USB, whereas on the latter, they are attached through a proprietary interface.
 
 Both the **Surface Laptop 3** and the **Surface Book 3** are plagued by a nasty issue with the trackpad on macOS. Fixing the issue is possible, but [requires downgrading the firmware to 13.101.140.0 and BigSurface.kext to 6.2](https://github.com/Xiashangning/BigSurface/issues/79#issuecomment-2208484390), that's why it still runs with `BigSurface.kext` v6.2.
-The trackpad works with the latest `BigSurface.kext` v6.5, though, but the trackpad lags and skips every few seconds. Furthermore, tests show that the `BigSurface.kext` v6.5 doesn't fix the dead trackpad after wake from hibernation.
+The trackpad works with the latest `BigSurface.kext` v6.5, though, but the trackpad lags and skips every few seconds. ~~Furthermore, tests show that the `BigSurface.kext` v6.5 doesn't fix the dead trackpad after wake from hibernation.~~
 
-Playing around trying to unload the `BigSurface.kext` or `VoodooSerial.kext` plug-in before hibernate and reloading it on wake from hibernate has been a dead end until now, as I'm unable to do so due to various errors with the `kextstat`, `kextunload` and `kextload` commands in macOS.
+~~Playing around trying to unload the `BigSurface.kext` or `VoodooSerial.kext` plug-in before hibernate and reloading it on wake from hibernate has been a dead end until now, as I'm unable to do so due to various errors with the `kextstat`, `kextunload` and `kextload` commands in macOS.~~
 
-So, the first steps to troubleshoot the trackpad issue would be to downgrade macOS to 13.6.7 Ventura and change the SMBIOS back to `MacBookAir9,1`, but I must admit I'm not all too confident that would fix the dead trackpad after wake from hibernation. We would probably need to find someone who is able to fix the `BigSurface.kext` and I'm not sure Xiashangning is still maintaining his `BigSurface` repo, as there hasn't been any activity for over a year now, [since July 14th 2023](https://github.com/Xiashangning/BigSurface/issues/109#issuecomment-1636433545).
+~~So, the first steps to troubleshoot the trackpad issue would be to downgrade macOS to 13.6.7 Ventura and change the SMBIOS back to `MacBookAir9,1`, but I must admit I'm not all too confident that would fix the dead trackpad after wake from hibernation. We would probably need to find someone who is able to fix the `BigSurface.kext` and I'm not sure Xiashangning is still maintaining his `BigSurface` repo, as there hasn't been any activity for over a year now, [since July 14th 2023](https://github.com/Xiashangning/BigSurface/issues/109#issuecomment-1636433545).~~
+
+So I fixed the dead trackpad on wake from hibernate on the `Surface Laptop 3` and very likely on the `Surface Book 3` as well.
+
+The issue was actually an issue in VoodooI2CHID which was fixed by https://github.com/VoodooI2C/VoodooI2CHID/commit/89fa5b64c1fc38b4b370d45c7ad0d8d632e3b86c
+
+Now the interesting thing is that the latest `BigSurface v6.5` forked and built with the above commit fixes the dreaded [Trackpad lagging/skipping bug](https://github.com/Xiashangning/BigSurface/issues/79) as well after the first hibernate/wake cycle following the laptop's boot into macOS.
+
+What this means is that in theory, `Surface Laptop 3` and `Surface Book 3` users should now be able to update their firmware through Windows Update and still have a smooth trackpad experience on macOS, provided they go through a hibernate/wake cycle after booting macOS. This still requires thorough testing, though, and I'm quite confident I should be able to fix this issue in the coming weeks.
+
+I also built the older `BigSurface v6.2` with the above commit and with this version, the `Surface Laptop 3` has a buttery smooth trackpad right from startup and also after wake from hibernate, provided the user follows [this procedure](https://github.com/Xiashangning/BigSurface/issues/79#issuecomment-2208484390) to downgrade the firmware of their Surface Laptop 3 or Surface Book 3.
+
+I would be glad if a few `Surface Laptop 3` and `Surface Book 3` users could try those test builds and report back.
+
+[BigSurface62SL3.zip](https://github.com/user-attachments/files/16448021/BigSurface62SL3.zip)
+[BigSurface65SL3.zip](https://github.com/user-attachments/files/16448027/BigSurface65SL3.zip)
+
