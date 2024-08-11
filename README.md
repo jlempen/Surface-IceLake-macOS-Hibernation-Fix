@@ -116,13 +116,13 @@ The trackpad works with the latest `BigSurface.kext` v6.5, though, but the track
 
 ~~So, the first steps to troubleshoot the trackpad issue would be to downgrade macOS to 13.6.7 Ventura and change the SMBIOS back to `MacBookAir9,1`, but I must admit I'm not all too confident that would fix the dead trackpad after wake from hibernation. We would probably need to find someone who is able to fix the `BigSurface.kext` and I'm not sure Xiashangning is still maintaining his `BigSurface` repo, as there hasn't been any activity for over a year now, [since July 14th 2023](https://github.com/Xiashangning/BigSurface/issues/109#issuecomment-1636433545).~~
 
-So I fixed the dead trackpad on wake from hibernate on the `Surface Laptop 3` and very likely on the `Surface Book 3` as well.
+So I fixed the dead trackpad on wake from hibernate on the `Surface Laptop 3` and on the `Surface Book 3` as well.
 
 The issue was actually an issue in VoodooI2CHID which was fixed by https://github.com/VoodooI2C/VoodooI2CHID/commit/89fa5b64c1fc38b4b370d45c7ad0d8d632e3b86c
 
 Now the interesting thing is that the latest `BigSurface v6.5` forked and built with the above commit fixes the dreaded [Trackpad lagging/skipping bug](https://github.com/Xiashangning/BigSurface/issues/79) as well after the first hibernate/wake cycle following the laptop's boot into macOS.
 
-What this means is that in theory, `Surface Laptop 3` and `Surface Book 3` users should now be able to update their firmware through Windows Update and still have a smooth trackpad experience on macOS, provided they go through a hibernate/wake cycle after booting macOS. This still requires thorough testing, though, and I'm quite confident I should be able to fix this issue in the coming weeks.
+~~What this means is that in theory, `Surface Laptop 3` and `Surface Book 3` users should now be able to update their firmware through Windows Update and still have a smooth trackpad experience on macOS, provided they go through a hibernate/wake cycle after booting macOS. This still requires thorough testing, though, and I'm quite confident I should be able to fix this issue in the coming weeks.~~
 
 I also built the older `BigSurface v6.2` with the above commit and with this version, the `Surface Laptop 3` has a buttery smooth trackpad right from startup and also after wake from hibernate, provided the user follows [this procedure](https://github.com/Xiashangning/BigSurface/issues/79#issuecomment-2208484390) to downgrade the firmware of their Surface Laptop 3 or Surface Book 3.
 
