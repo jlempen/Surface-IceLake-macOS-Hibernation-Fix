@@ -42,7 +42,7 @@ and commands such as `pmset -g log` or `pmset -g log | grep -e "Sleep.*due to" -
 ## Add Reserved Memory region
 This fix was found in [Tyler Nguyen's x1c6-hackintosh repo](https://github.com/tylernguyen/x1c6-hackintosh/issues/44#issuecomment-705971765). Thank you @benbender @1Revenger1 @savvamitrofanov and @vit9696!
 
-Get rid of the black screen on Wake with the following Reserved Memory region in `NVRAM -> ReservedMemory`:
+Get rid of the black screen on Wake with the following Reserved Memory region in `UEFI -> ReservedMemory`:
 ```
 Comment: Fix hibernate mode 25 black screen on wake
 Address: 569344
