@@ -1,5 +1,5 @@
 # Surface-IceLake-macOS-Hibernation-Fix
-After many hours of tinkering, **I finally found a way to fix ACPI S4 Hibernation** (`hibernatemode 25`) on the **i5 Surface Pro 7** on macOS 13.6.7 Ventura, **15-Inch i7 Surface Laptop 3** on macOS 14.5 Sonoma, **i5 Surface Laptop Go 1** on macOS 13.6.7 Ventura and very likely on the **Surface Book 3** (untested) as well. ACPI S3 Sleep (`hibernatemode 0`) is still broken, though, but perhaps the Hibernation fix will lead the way to a full S3 Sleep fix at some point in the future.
+After many hours of tinkering, **I finally found a way to fix ACPI S4 Hibernation** (`hibernatemode 25`) on the **i5 Surface Pro 7** on macOS 13.6.7 Ventura, **15-Inch i7 Surface Laptop 3** on macOS 14.5 Sonoma, **i5 Surface Laptop Go 1** on macOS 13.6.7 Ventura and on the **Surface Book 3** as well. ACPI S3 Sleep (`hibernatemode 0`) is still broken, though, but perhaps the Hibernation fix will lead the way to a full S3 Sleep fix at some point in the future.
 
 The key to the fix is to **enable ACPI S3 Sleep** in the DSDT. This is actually very easy and I'm stunned nobody tried this before. Searching for `_S3` in the `DSDT.aml` file leads us to this:
 
@@ -105,7 +105,7 @@ A very simple fix for this issue is to [download and install Bluesnooze](https:/
 ## A few comments / Help needed!
 Hibernation seems to be working perfectly on my i5 / 8GB / 256GB **Surface Pro 7** and i5 / 8GB / 256GB **Surface Laptop Go 1** both running on macOS Ventura 13.6.7 with the SMBIOS `MacBookAir9,1` and using [Xiashangning's BigSurface.kext v6.5](https://github.com/Xiashangning/BigSurface/releases/tag/v6.5). Everything comes back online after waking up from hibernation.
 
-However, my i7 / 16GB / 2TB WD SN770M **15-Inch Surface Laptop 3** running macOS Sonoma 14.5 with the SMBIOS `MacBookPro16,2` and with [Xiashangning's BigSurface.kext v6.2](https://github.com/Xiashangning/BigSurface/releases/tag/v6.2) wakes up with a dead trackpad. I have yet to find a way to fix the dead trackpad.
+~~However, my i7 / 16GB / 2TB WD SN770M **15-Inch Surface Laptop 3** running macOS Sonoma 14.5 with the SMBIOS `MacBookPro16,2` and with [Xiashangning's BigSurface.kext v6.2](https://github.com/Xiashangning/BigSurface/releases/tag/v6.2) wakes up with a dead trackpad. I have yet to find a way to fix the dead trackpad.~~
 
 The main difference between the **Surface Pro 7** or **Surface Laptop Go 1** and the **Surface Laptop 3** or **Surface Book 3** is that on the former, the keyboard and trackpad are attached through USB, whereas on the latter, they are attached through a proprietary interface.
 
