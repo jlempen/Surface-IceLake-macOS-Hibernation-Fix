@@ -116,6 +116,8 @@ The trackpad works with the latest `BigSurface.kext` v6.5, though, but the track
 
 ~~So, the first steps to troubleshoot the trackpad issue would be to downgrade macOS to 13.6.7 Ventura and change the SMBIOS back to `MacBookAir9,1`, but I must admit I'm not all too confident that would fix the dead trackpad after wake from hibernation. We would probably need to find someone who is able to fix the `BigSurface.kext` and I'm not sure Xiashangning is still maintaining his `BigSurface` repo, as there hasn't been any activity for over a year now, [since July 14th 2023](https://github.com/Xiashangning/BigSurface/issues/109#issuecomment-1636433545).~~
 
+
+## Edit on 12 August 2024
 So I fixed the dead trackpad on wake from hibernate on the `Surface Laptop 3` and on the `Surface Book 3` as well.
 
 The issue was actually an issue in VoodooI2CHID which was fixed by https://github.com/VoodooI2C/VoodooI2CHID/commit/89fa5b64c1fc38b4b370d45c7ad0d8d632e3b86c
@@ -134,3 +136,25 @@ Edit: both kexts updated with the VoodooInput.kext v1.1.5 for macOS Sequoia Beta
 
 [BigSurface v6.5 for SL3 and SB3.zip](https://github.com/user-attachments/files/16576291/BigSurface.v6.5.for.SL3.and.SB3.zip)
 
+
+## Edit on 17 August 2024
+So this week-end I set up a `Surface Laptop 3` and a `Surface Book 3` each with a Ventura-Sonoma-Sequoia triple-boot to test my updated test versions of `BigSurface` v6.2 and v6.5:
+
+[BigSurface v6.2 for SL3 and SB3.zip](https://github.com/user-attachments/files/16576290/BigSurface.v6.2.for.SL3.and.SB3.zip)
+
+[BigSurface v6.5 for SL3 and SB3.zip](https://github.com/user-attachments/files/16576291/BigSurface.v6.5.for.SL3.and.SB3.zip)
+
+Here's my conclusions:
+
+- Both the `Surface Laptop 3` and the `Surface Book 3` need to have their [UEFI firmware downgraded](https://github.com/Xiashangning/BigSurface/issues/79#issuecomment-2208484390) to version `13.101.140.0` in order to have a working trackpad and keyboard upon wake from hibernation
+- Hibernation works flawlessly on both devices with Ventura, Sonoma and Sequoia Beta 5, provided you enable `hibernatemode 25` by [following my howto](https://github.com/jlempen/Surface-IceLake-macOS-Hibernation-Fix)
+- On both devices, the trackpad is smooth before and after hibernation with `BigSurface` v6.2
+- On both devices, the trackpad is choppy after boot and smooth after the first and all subsequent hibernation cycles with `BigSurface` v6.5
+
+In a nutshell, downgrade the UEFI firmware to `13.101.140.0`, setup `hibernatemode 25` [as described here](https://github.com/jlempen/Surface-IceLake-macOS-Hibernation-Fix) and [use my fork of BigSurface v6.2 for SL3 and SB3](https://github.com/user-attachments/files/16576290/BigSurface.v6.2.for.SL3.and.SB3.zip) on macOS Ventura, Sonoma or even Sequoia to get a flawless experience on the `Surface Laptop 3` and `Surface Book 3`.
+
+The latest Beta 5 of macOS Sequoia works quite well, but you'll have to use [itlwm.kext v2.3](https://github.com/OpenIntelWireless/itlwm/releases/download/v2.3.0/itlwm_v2.3.0_stable.kext.zip) and the [HeliPort v1.5](https://github.com/OpenIntelWireless/HeliPort/releases/download/v1.5.0/HeliPort.dmg) app to get Wifi working.
+
+I'm still trying to fix the choppy trackpad on boot with `BigSurface` v6.5.
+
+For some odd reason, the only way to install macOS on the `Surface Book 3` running with the latest UEFI firmware is to disable graphics acceleration by adding the `-igfxvesa` boot argument to the `config.plist` or the display craps out when booting the installer. Once installed, you may enable graphics acceleration again by removing the `-igfxvesa` boot-arg.
