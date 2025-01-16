@@ -1,4 +1,12 @@
 # Surface-IceLake-macOS-Hibernation-Fix
+
+> [!NOTE]
+> This repo is kept alive for informational purposes only.
+>
+> All the fixes documented below have been merged into my respective repos for the [Surface Laptop 3](https://github.com/jlempen/Surface-Laptop-3-OpenCore) and [Surface Book 3](https://github.com/jlempen/Surface-Book-3-OpenCore).
+> 
+> For the best of my knowledge, they have also been merged into [balopez83's repo for the Surface Pro 7](https://github.com/balopez83/Surface-Pro-7-Hackintosh), [badstorm's repo for the Surface Pro 7](https://github.com/badstorm/surface-pro-7-opencore) and [jc-bao's repo for the Surface Laptop 3](https://github.com/jc-bao/surface-laptop3-macos).
+
 After many hours of tinkering, **I finally found a way to fix ACPI S4 Hibernation** (`hibernatemode 25`) on the **Surface Pro 7**, **Surface Laptop 3**, **Surface Book 3** and **Surface Laptop Go 1** on macOS Ventura, Sonoma and Sequoia. ACPI S3 Sleep (`hibernatemode 0`) is still broken, though, but perhaps the Hibernation fix will lead the way to a full S3 Sleep fix at some point in the future.
 
 The key to the fix is to **enable ACPI S3 Sleep** in the DSDT. This is actually very easy and I'm stunned nobody tried this before. Searching for `_S3` in the `DSDT.aml` file leads us to this:
